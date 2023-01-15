@@ -6,8 +6,8 @@ import Pagination from 'components/Pagination';
 import './styles.css';
 import { useEffect, useState } from 'react';
 import { SpringPage } from 'types/vendor/spring';
-import axios, { AxiosRequestConfig } from 'axios';
-import { BASE_URL } from 'Util/requests';
+import { AxiosRequestConfig } from 'axios';
+import { BASE_URL, requestBackend } from 'Util/requests';
 import CardLoader from './CardLoader';
 
 const Catalog = () => {
@@ -27,7 +27,8 @@ const Catalog = () => {
       },
     }
     setIsLoading(true);
-    axios(params).then(response => {
+    requestBackend(params)
+    .then(response => {
       setPage(response.data);
     }).finally(() => { setIsLoading(false)});
   }, [])
