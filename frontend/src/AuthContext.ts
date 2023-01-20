@@ -1,6 +1,5 @@
 import { createContext } from "react";
-import { TokenData } from "Util/requests";
-
+import { TokenData } from "Util/auth";
 
 
 export type AuthContextData = {
@@ -14,7 +13,7 @@ export type AuthContextType = {
     setAuthContextData: (authContextData: AuthContextData) => void;
     };
 
-    export const AuthContext = createContext<AuthContextType>({
+export const AuthContext = createContext<AuthContextType>({
         authContextData: {
             authenticated: false,
         },
