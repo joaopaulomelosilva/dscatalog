@@ -1,3 +1,6 @@
+.product-crud-container{
+    max-width: 960px;
+}
 
 .btn-crud-add{
     width: 100%;
@@ -8,11 +11,6 @@
     font-size: 16px;
     letter-spacing: -0.015em;
 
-    margin-bottom: 20px;
-}
-
-.product-filter-container{
-    padding: 15px;
     margin-bottom: 20px;
 }
 

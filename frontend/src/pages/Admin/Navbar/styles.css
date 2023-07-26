@@ -1,5 +1,5 @@
 
-ul{
+.admin-nav-item-container{
     display: flex;
     justify-content: space-around;
     list-style: none;
@@ -43,7 +43,7 @@ ul{
 }
 
 @media (min-width: 1200px){
-    ul{
+    .admin-nav-item-container{
         justify-content: unset;
         flex-direction: column;
     }

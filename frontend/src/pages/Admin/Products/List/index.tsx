@@ -1,51 +1,91 @@
+import { AxiosRequestConfig } from 'axios';
 import './styles.css';
 import ProductCrudCard from 'pages/Admin/Products/ProductCrudCard';
+import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Product } from 'types/product';
+import { SpringPage } from 'types/vendor/spring';
+import { BASE_URL, requestBackend } from 'Util/requests';
+import Pagination from 'components/Pagination';
+import ProductFilter, { productFilterData } from 'components/ProductFilter';
 
+type ControlComponentsData = {
+    activePage : number;
+    filterData: productFilterData;
+}
 
 const List = () => {
 
-    const product = {
-        "id": 2,
-        "name": "Smart TV",
-        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-        "price": 2190.0,
-        "imgUrl": "https://raw.githubusercontent.com/devsuperior/dscatalog-resources/master/backend/img/2-big.jpg",
-        "date": "2020-07-14T10:00:00Z",
-        "categories": [
-            {
-                "id": 1,
-                "name": "Livros"
-            },
-            {
-                "id": 3,
-                "name": "Computadores"
-            }
-        ]
+    const [page, setPage] = useState<SpringPage<Product>>();
+
+    const [controlComponentsData, setControlComponentsData] = useState<ControlComponentsData>(
+        {
+            activePage: 0,
+            filterData: {name: "", category: null},
+        }
+    );
+
+    const handlePageChange = (pageNumber : number) => {
+        setControlComponentsData({activePage: pageNumber, filterData: controlComponentsData.filterData})
     }
 
+    const handleSubmitFilter = (data: productFilterData) => {
+        setControlComponentsData({activePage: 0, filterData: data})
+    }
+
+    const getProducts = useCallback(() => {
+        const config : AxiosRequestConfig = {
+            method: 'GET',
+            url: `/products`,
+            baseURL: BASE_URL,
+            params: {
+                page: controlComponentsData.activePage,
+                size: 3,
+                name: controlComponentsData.filterData.name,
+                categoryId: controlComponentsData.filterData.category?.id
+            },
+        }
+        //setIsLoading(true);
+        requestBackend(config)
+        .then(response => {
+            setPage(response.data);
+        })
+    }, [controlComponentsData]);
+
+    useEffect(() => {
+
+        getProducts();
+
+        }, [getProducts])
+
     return (
-        <>
+        
+        <div className='product-crud-container'>
             <div className='product-crud-bar-container'>
                 <Link to="/admin/products/create">
-                <button className='btn btn-primary text-white btn-crud-add'>ADICIONAR</button>
+                    <button className='btn btn-primary text-white btn-crud-add'>
+                        ADICIONAR
+                    </button>
                 </Link>
 
-                <div className='base-card product-filter-container'>Search bar</div>
+                <ProductFilter onSubmitFilter={handleSubmitFilter} />
             </div>
             <div className='row'>
-                <div className='col-sm-6 col-md-12'>
-                    <ProductCrudCard product={product} />
-                </div>
-                <div className='col-sm-6 col-md-12'>
-                    <ProductCrudCard product={product} />
-                </div>
-                <div className='col-sm-6 col-md-12'>
-                    <ProductCrudCard product={product} />
-                </div>
 
+                {page?.content.map(product => (
+                    <div key={product.id} className='col-sm-6 col-md-12'>
+                        <ProductCrudCard product={product} onDelete={getProducts} />
+                    </div>
+                ))}
             </div>
-        </>
+            <Pagination 
+                forcePage={page?.number}
+                pageCount={ (page) ? page.totalPages : 0} 
+                range={3} 
+                onChange={handlePageChange}
+            />
+        </ div>
+
     );
 }
 
