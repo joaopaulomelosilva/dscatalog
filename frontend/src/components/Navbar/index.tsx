@@ -6,7 +6,8 @@ import { useContext, useEffect } from 'react';
 import history from '../../Util/history';
 import { AuthContext } from 'AuthContext';
 import { removeAuthData } from 'Util/storage';
-import { getTokenData, isAuthenticated } from '../../Util/auth';
+import { isAuthenticated } from '../../Util/auth';
+import { getTokenData } from 'Util/token';
 
 const Navbar = () => {
 

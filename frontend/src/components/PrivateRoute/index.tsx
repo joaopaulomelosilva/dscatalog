@@ -1,6 +1,7 @@
 
 import { Redirect, Route } from 'react-router-dom';
-import { hasAnyRoles, isAuthenticated, Role } from '../../Util/auth';
+import { hasAnyRoles, isAuthenticated } from '../../Util/auth';
+import { Role } from 'types/role';
 
 type Props = {
     children: React.ReactNode;
