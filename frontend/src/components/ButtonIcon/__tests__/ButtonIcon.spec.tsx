@@ -5,7 +5,7 @@ import "@testing-library/jest-dom/extend-expect"; // Importe esta linha para usa
 
 
 
-test.only('ButtonIcon should render button with given text', () => {
+test('ButtonIcon should render button with given text', () => {
     //ARRANGE
     const text = "Fazer Login";
 
