@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import ProductPrice from "..";
+import "@testing-library/jest-dom/extend-expect"; // Importe esta linha para usar a função toBeInTheDocument()
 
 
 test('should render ProductPrice', () => {

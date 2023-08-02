@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { Product } from "../../../types/product";
 import ProductCard from "..";
+import "@testing-library/jest-dom/extend-expect"; // Importe esta linha para usar a função toBeInTheDocument()
 
 test('should render ProductCard', () => {
      //ARRANGE
