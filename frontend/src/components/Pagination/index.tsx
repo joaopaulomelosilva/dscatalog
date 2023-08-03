@@ -23,10 +23,10 @@ return(
         breakClassName='pagination-item'
 
         previousClassName='arrow-previous'
-        previousLabel={<div className='pagination-arrow-container'><ArrowIcon/></div>}
+        previousLabel={<div className='pagination-arrow-container' data-testid="arrow-previous"><ArrowIcon/></div>}
 
         nextClassName='arrow-next'
-        nextLabel={<div className='pagination-arrow-container'><ArrowIcon/></div>}
+        nextLabel={<div className='pagination-arrow-container' data-testid="arrow-next"><ArrowIcon/></div>}
 
         activeLinkClassName='pagination-link-active'
         disabledClassName='arrow-inactive'
