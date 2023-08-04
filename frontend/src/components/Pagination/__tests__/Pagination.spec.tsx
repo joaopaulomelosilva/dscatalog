@@ -49,8 +49,6 @@ describe('Pagination tests', () => {
                 onChange={onChange}
             />
         );
-
-        screen.debug();
         
         //ASSERT
         const arrowNext = screen.getByTestId("arrow-next");
@@ -84,6 +82,29 @@ describe('Pagination tests', () => {
 
         userEvent.click(arrowPrevious);
         expect(onChange).toHaveBeenCalledWith(0);
+
+    }); 
+
+    test('page link should call onChange', () => {
+        //ARRANGE
+        const pageCount = 3;
+        const range = 3;
+        const onChange = jest.fn();
+    
+        //ACT
+        render(
+            <Pagination 
+                pageCount={pageCount} 
+                range={range} 
+                onChange={onChange}
+            />
+        );
+        
+        //ASSERT
+        const page2 = screen.getByText('2');
+        userEvent.click(page2);
+
+        expect(onChange).toHaveBeenCalledWith(1);
 
     }); 
 
