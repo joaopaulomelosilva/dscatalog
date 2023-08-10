@@ -4,7 +4,7 @@ import "@testing-library/jest-dom/extend-expect"; // Importe esta linha para usa
 import { Router, useParams } from "react-router-dom";
 import history from 'Util/history';
 import userEvent from "@testing-library/user-event";
-import { server } from "./fixtures";
+import { productResponse, server } from "./fixtures";
 import selectEvent from "react-select-event";
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
@@ -36,7 +36,6 @@ describe('Product Form create tests', () => {
         );
 
          const nameInput = screen.getByTestId("name");
-         
          const priceInput = screen.getByTestId("price");
          const imgUrlInput = screen.getByTestId("imgUrl");
          const descriptionInput = screen.getByTestId("description");
@@ -73,6 +72,8 @@ describe('Product Form create tests', () => {
          
     }); 
 
+
+
     test('Should show 5 validation messages when just clicking submit', async() => {
 
         render(
@@ -93,5 +94,95 @@ describe('Product Form create tests', () => {
          
     }); 
 
+
+
+    test('Should clear validation messages when filling out the form correctly', async() => {
+
+        render(
+            <Router history={history}>
+                <Form />
+            </Router>
+        );
+
+        // Parte 1 - Provocar os erros 
+         const submitButton = screen.getByRole("button", { name: /salvar/i});
+
+         // Clique no Botão
+         userEvent.click(submitButton);
+
+         await waitFor(() => {
+            const messages = screen.getAllByText('Campo obrigatório');
+            expect(messages).toHaveLength(5);
+         });
+
+        // Parte 2 - preencher o formulário
+        const nameInput = screen.getByTestId("name");
+        const priceInput = screen.getByTestId("price");
+        const imgUrlInput = screen.getByTestId("imgUrl");
+        const descriptionInput = screen.getByTestId("description");
+        const categoriesInput = screen.getByLabelText("Categorias");
+
+        await selectEvent.select(categoriesInput, ['Eletrônicos', 'Computadores']);
+        userEvent.type(nameInput, 'Computador');
+        userEvent.type(priceInput, '5000.12');
+        userEvent.type(imgUrlInput, 'https://www.lg.com/br/images/computadores/md07571821/DZ-01.jpg');
+        userEvent.type(descriptionInput, 'Computador muito bom');
+
+        await waitFor(() => {
+            const messages2 = screen.queryAllByText('Campo obrigatório');
+            expect(messages2).toHaveLength(0);
+         });
+         
+    }); 
+
 })
 
+
+describe('Product form update tests', () => {
+
+    beforeEach(() => {
+        (useParams as jest.Mock).mockReturnValue({
+            productId: '1'
+        })
+    })
+
+    test('Should show toast and redirect when submit form correctly', async() => {
+
+        render(
+            <Router history={history}>
+                <ToastContainer />
+                <Form />
+            </Router>
+        );
+        
+        await waitFor(() => {
+            const nameInput = screen.getByTestId("name");
+            const priceInput = screen.getByTestId("price");
+            const imgUrlInput = screen.getByTestId("imgUrl");
+            const descriptionInput = screen.getByTestId("description");
+            const formElement = screen.getByTestId("form");
+   
+            expect(nameInput).toHaveValue(productResponse.name);
+            expect(priceInput).toHaveValue(String(productResponse.price));
+            expect(imgUrlInput).toHaveValue(productResponse.imgUrl);
+            expect(descriptionInput).toHaveValue(productResponse.description);
+
+            const ids = productResponse.categories.map(x =>String(x.id));
+            expect(formElement).toHaveFormValues({categories: ids});
+        });
+        
+        const submitButton = screen.getByRole("button", { name: /salvar/i});
+
+          // Clique no Botão
+          userEvent.click(submitButton);
+
+          // como verificar se o Toast apareceu
+          await waitFor(() => {
+             const toastElement = screen.getByText("Produto Cadastrado com Sucesso!");
+             expect(toastElement).toBeInTheDocument();
+          })
+ 
+          // Verificar se foi redirecionado
+          expect(history.location.pathname).toEqual('/admin/products');
+    }); 
+});
