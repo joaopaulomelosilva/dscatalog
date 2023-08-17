@@ -26,6 +26,7 @@ describe('formatPrice for positive numbers', () => {
     it('should format number pt-BR when given -5.1', () => {
         const result = formatPrice(-5.1);
         expect(result).toEqual("-5,10");
+        // teste
     });
 
   });
